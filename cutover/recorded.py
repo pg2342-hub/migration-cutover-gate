@@ -48,17 +48,21 @@ class Tape:
         return queue.pop(0)
 
 
-def recording_mapper(mapper: Callable[[dict], dict], tape: Tape) -> Callable[[dict], dict]:
+def _mkey(case_input: dict, fingerprint: Any) -> str:
+    return key(case_input) if fingerprint is None else key({"input": case_input, "mapper": fingerprint})
+
+
+def recording_mapper(mapper: Callable[[dict], dict], tape: Tape, fingerprint: Any = None) -> Callable[[dict], dict]:
     def call(case_input: dict) -> dict:
         record = mapper(case_input)
-        tape.append(key(case_input), record)
+        tape.append(_mkey(case_input, fingerprint), record)
         return record
 
     return call
 
 
-def replay_mapper(tape: Tape) -> Callable[[dict], dict]:
-    return lambda case_input: tape.next(key(case_input))
+def replay_mapper(tape: Tape, fingerprint: Any = None) -> Callable[[dict], dict]:
+    return lambda case_input: tape.next(_mkey(case_input, fingerprint))
 
 
 def recording_judge(judge: Callable[[str], Any], tape: Tape) -> Callable[[str], Any]:

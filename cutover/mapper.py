@@ -99,9 +99,9 @@ For each matter, pick the client it belongs to (client_id = a legacy_id from thi
 
 For each extra column listed, choose the Clio field it belongs in: responsible attorney, practice area, location (office), a matter custom field (case numbers and other matter facts with no standard field), the contact's LEDES client id or title, or ignore only for data with no value to the firm.
 
-review_notes: for every record a person must check (an uncertain match, a possible duplicate, a value the rules flagged), one or two plain sentences to the firm's operations lead saying exactly what to look at and what answer you need. No jargon.
+review_notes: for every record a person must check (an uncertain match, a possible duplicate, a value the rules flagged), one or two plain sentences to the firm's operations lead saying exactly which record to look at and ending with the exact answer you need (for example: "Please send the court case number for matter M2022 as it appears on the filing."). No jargon.
 
-summary: three to five plain sentences to the firm's operations lead. State whether the batch is ready to load or on hold, the numbers that tie or do not tie (from the reconciliation given to you), and the exact sign-off or answers you need. The rule is fixed: the batch is on hold if any reconciliation line does not tie; otherwise it loads, and records waiting for review stay out until someone answers. Never say a held batch is ready."""
+summary: three to five plain sentences to the firm's operations lead. The rule is fixed: the batch is on hold if any reconciliation line does not tie; otherwise it is loaded into Clio as soon as you reply, and records waiting for review stay out until someone answers. So state that the batch is being loaded or is on hold, give the numbers that tie or do not tie (from the reconciliation given to you), and name every record still waiting for review. Ask only for the answers the review queue or a line that does not tie actually needs; a batch that ties needs no approval to load. Never say a held batch is ready or loaded."""
 
 
 def prompt(view: dict) -> str:

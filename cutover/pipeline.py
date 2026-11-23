@@ -162,7 +162,7 @@ def run(raw: dict, mapper: Callable[[dict], dict], make_target: Callable[[], Any
     client_ids = {c["id"] for c in batch["clients"]}
 
     # contacts
-    contacts, held_clients = [], set()
+    contacts, held_clients, pair = [], set(), {}
     for c in batch["clients"]:
         d = by_contact.get(c["id"])
         rec = {"id": c["id"], "email": c["email"], "phone": c["phone"], "route": "load", "reason": ""}
@@ -179,6 +179,7 @@ def run(raw: dict, mapper: Callable[[dict], dict], make_target: Callable[[], Any
                     reason = notes.get(c["id"]) or f"may be the same client as {dup}"
                     rec["route"], rec["reason"] = "review", reason
                     held_clients |= {c["id"], dup}
+                    pair[dup] = c["id"]
         for col, val in c["extras"].items():
             target = mapping.get(col, "ignore")
             if target == "contact.ledes_client_id" and val:
@@ -188,7 +189,9 @@ def run(raw: dict, mapper: Callable[[dict], dict], make_target: Callable[[], Any
         contacts.append(rec)
     for rec in contacts:
         if rec["id"] in held_clients and rec["route"] == "load":
-            rec["route"], rec["reason"] = "review", notes.get(rec["id"]) or "a possible duplicate of this client is in review"
+            other = pair.get(rec["id"], "another client row")
+            why = f"may be the same client as {other}; please confirm whether {rec['id']} and {other} are one client or two"
+            rec["route"], rec["reason"] = "review", notes.get(rec["id"]) or why
     for q in queue:
         if q["type"] == "client":
             for rec in contacts:
@@ -218,7 +221,11 @@ def run(raw: dict, mapper: Callable[[dict], dict], make_target: Callable[[], Any
         else:
             rec["client_id"] = p["client_id"]
             if p["client_id"] not in approved_clients:
-                rec["route"], rec["reason"] = "review", f"its client {p['client_id']} is waiting for review"
+                rec["route"], rec["reason"] = (
+                    "review",
+                    f"its client {p['client_id']} is waiting for review; this matter loads with that client "
+                    f"once the question on {p['client_id']} is answered",
+                )
         for col, val in m["extras"].items():
             target = mapping.get(col, "ignore")
             if not val or target == "ignore":

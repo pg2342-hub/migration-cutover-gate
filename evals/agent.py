@@ -19,6 +19,15 @@ from cutover.baseline import baseline
 from cutover.recorded import ROOT, Tape, recording_mapper, replay_mapper
 
 MAPPER_TAPE = Tape(ROOT / "mapper.jsonl")
+
+
+def fingerprint():
+    """Model, prompt and schema of the mapping step: a recording made with any other version does not replay."""
+    from cutover import mapper
+
+    return {"model": mapper.MODEL, "effort": mapper.EFFORT, "system": mapper.SYSTEM, "schema": mapper.SCHEMA}
+
+
 _live = None
 
 
@@ -27,7 +36,7 @@ def _respond(out):
 
 
 def recorded_agent(case_input):
-    return _respond(pipeline.run(case_input, replay_mapper(MAPPER_TAPE)))
+    return _respond(pipeline.run(case_input, replay_mapper(MAPPER_TAPE, fingerprint())))
 
 
 def live_agent(case_input):
@@ -35,7 +44,7 @@ def live_agent(case_input):
     if _live is None:  # created on first use, so importing this file needs no key
         from cutover.mapper import ClaudeMapper
 
-        _live = recording_mapper(ClaudeMapper(), MAPPER_TAPE)
+        _live = recording_mapper(ClaudeMapper(), MAPPER_TAPE, fingerprint())
     return _respond(pipeline.run(case_input, _live))
 
 
