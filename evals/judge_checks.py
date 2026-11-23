@@ -39,9 +39,16 @@ def _queue(out):
 def _summary(out):
     # fixed field order, so a replayed output renders the same prompt as the live one
     recon = [{k: r[k] for k in ("measure", "key", "source", "migrated", "ties")} for r in out["reconciliation"]]
+    loading = "nothing (batch held)"
+    if out["decision"] == "load":
+        clients = [c["id"] for c in out["contacts"] if c["route"] == "load"]
+        matters = [m["id"] for m in out["matters"] if m["route"] == "load"]
+        loading = f"clients {clients or 'none'}, matters {matters or 'none'}"
     return (
         f"Decision the pipeline took: {out['decision']}\n"
-        f"Reconciliation: {json.dumps(recon, sort_keys=True)}\n"
+        "Reconciliation (the export compared with the old system's own report; it counts every exported record, "
+        f"including records held for review): {json.dumps(recon, sort_keys=True)}\n"
+        f"Loading into Clio now: {loading}\n"
         f"Review queue:\n{_queue(out) or '(empty)'}\n\n"
         f"Message to the firm:\n{out['summary']}"
     )

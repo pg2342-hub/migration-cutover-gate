@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/pg2342-hub/migration-cutover-gate/actions/workflows/ci.yml/badge.svg)](https://github.com/pg2342-hub/migration-cutover-gate/actions/workflows/ci.yml)
 
-Demo page: https://pg2342-hub.github.io/migration-cutover-gate/ (every batch, check and judge verdict from the latest recorded live run; no install needed)
+Demo page: https://pranavgudise.dev/migration-cutover-gate/ (every batch, check and judge verdict from the latest recorded live run; no install needed)
 
 A go-live gate for moving a law firm's data out of its old practice management system and into Clio Manage. Each batch of the old system's export (clients, matters, unbilled time, billed invoices, trust balances) is cleaned by rules, tied back to the totals the old system prints on its own reports, mapped by Claude where a rule cannot decide, and loaded only when every number ties. The result for each batch is **load or hold**, a review queue with a plain reason for each record a person must check, and a message to the firm. 30 constructed batches and a gate decide whether the pipeline is ready to run a real migration: **go, partial or no-go**.
 

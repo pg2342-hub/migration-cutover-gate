@@ -19,8 +19,9 @@ notes = {
         "batch to the old system's own report; Claude makes the calls rules cannot (who a hand-typed matter belongs "
         "to, duplicate clients, unfamiliar columns, review notes); a batch loads only when every line ties, and "
         "every request is checked against Clio's published API schema. "
-        f"Recorded live run of {s['model']}: {s['calls']} mapping calls, mean {s['mean_latency_s']:.1f} s and "
-        f"${s['mean_cost_usd']:.4f} per batch; judge ${s['judge_cost_usd']:.2f} in total. "
+        f"Recorded live run of {s['model']}: {s['calls']} Claude calls (two per batch: the mapping, then the message "
+        f"to the firm), mean {s['mean_latency_s']:.1f} s and ${s['mean_cost_usd']:.4f} per call; judge "
+        f"${s['judge_cost_usd']:.2f} in total. "
         "<a href='baseline/'>See a plain spreadsheet import blocked by the same gate</a>. "
         "<a href='https://github.com/pg2342-hub/migration-cutover-gate'>Code on GitHub</a>."
     ),
