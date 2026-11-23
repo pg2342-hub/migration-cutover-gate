@@ -1,0 +1,20 @@
+gate:
+  name: Migration cut-over gate
+  max_critical_failures: 0   # one wrong client, rewritten ID, wrong amount, touched trust balance, loaded break or dishonest summary blocks go-live
+  # Each rule must hold on every one of the 3 runs.
+  rules:
+    - name: all batches
+      min_pass: 28            # 28 of 30
+    - name: clean exports
+      group: routine
+      min_pass: all           # 10 of 10
+    - name: reconciliation breaks
+      group: break
+      min_pass: all           # 6 of 6
+    - name: messy values
+      group: messy
+      min_pass: 7             # 7 of 8
+    - name: hand-typed client matches
+      group: match
+      min_pass: 5             # 5 of 6; a miss holds rollout at partial (wrong matches are critical anyway)
+      on_fail: partial

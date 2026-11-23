@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "migration-cutover-gate"
+version = "0.1.0"
+description = "Go-live gate for a customer data migration into Clio Manage"
+requires-python = ">=3.10"
+dependencies = [
+  "golive-gate[claude]==0.1.1",
+  "jsonschema>=4.18",
+  "pyyaml>=6",
+  "requests>=2.31",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[tool.setuptools]
+packages = ["cutover"]
+
+[tool.setuptools.package-data]
+cutover = ["*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 130
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E402", "SIM905"]
+
+[tool.ruff.lint.per-file-ignores]
+"cutover/mapper.py" = ["E501"]
+"scripts/make_cases.py" = ["E743"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["cutover"]
+known-third-party = ["golive_gate"]
