@@ -30,7 +30,8 @@ def _with(case, edit):
 
     def mapper(view):
         d = base(view)
-        edit(d)
+        if view.get("task") != "summary":
+            edit(d)
         return d
 
     return mapper

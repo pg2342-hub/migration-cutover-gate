@@ -24,6 +24,7 @@ class FakeMessages:
         for c in CASES.values():
             views = []
             pipeline.run(c.input, lambda view, c=c, views=views: views.append(view) or oracle(c)(view))
+            views = [v for v in views if v.get("task") != "summary"]
             decisions = oracle(c)(views[0])
             decisions.pop("_meta")
             self.by_prompt[M.prompt(views[0])] = decisions
@@ -34,6 +35,8 @@ class FakeMessages:
         if kw.get("system") == M.SYSTEM:
             assert kw["output_config"]["format"]["type"] == "json_schema"
             text = json.dumps(self.by_prompt[kw["messages"][0]["content"]])
+        elif kw.get("system") == M.SUMMARY_SYSTEM:
+            text = json.dumps({"summary": "This batch ties and is loading."})
         else:
             text = "VERDICT: PASS - meets the criterion"
         usage = types.SimpleNamespace(

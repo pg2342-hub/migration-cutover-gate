@@ -6,8 +6,6 @@ and to plant single mistakes and watch the right check catch them.
 
 from golive_gate import load_cases
 
-from cutover.reconcile import breaks as find_breaks
-
 CASES = {c.id: c for c in load_cases("evals/cases.yml")}
 
 
@@ -18,6 +16,12 @@ def oracle(case):
         dups = {"C1025": "C1024"}
 
     def mapper(view):
+        if view.get("task") == "summary":
+            held = view["facts"]["decision"] == "hold"
+            text = (
+                "This batch is on hold because a reconciliation line does not tie." if held else "This batch ties and is loading."
+            )
+            return {"summary": text, "_meta": {"model": "oracle", "cost_usd": 0.0, "latency_s": 0.0}}
         contacts = []
         for c in view["clients"]:
             t = exp["types"][c["legacy_id"]]
@@ -51,16 +55,11 @@ def oracle(case):
         mapping = [
             {"source_column": e["column"], "target": exp["mapping"].get(e["column"], "ignore")} for e in view["extra_columns"]
         ]
-        held = bool(find_breaks(view["reconciliation"]))
-        summary = (
-            "This batch is on hold because a reconciliation line does not tie." if held else "This batch ties and is loading."
-        )
         return {
             "contacts": contacts,
             "matter_clients": picks,
             "column_mapping": mapping,
             "review_notes": notes,
-            "summary": summary,
             "_meta": {"model": "oracle", "cost_usd": 0.0, "latency_s": 0.0},
         }
 

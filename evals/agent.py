@@ -25,7 +25,14 @@ def fingerprint():
     """Model, prompt and schema of the mapping step: a recording made with any other version does not replay."""
     from cutover import mapper
 
-    return {"model": mapper.MODEL, "effort": mapper.EFFORT, "system": mapper.SYSTEM, "schema": mapper.SCHEMA}
+    return {
+        "model": mapper.MODEL,
+        "effort": mapper.EFFORT,
+        "system": mapper.SYSTEM,
+        "schema": mapper.SCHEMA,
+        "summary_system": mapper.SUMMARY_SYSTEM,
+        "summary_schema": mapper.SUMMARY_SCHEMA,
+    }
 
 
 _live = None

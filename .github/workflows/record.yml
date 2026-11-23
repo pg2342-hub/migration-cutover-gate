@@ -31,8 +31,8 @@ jobs:
           cat reports/live/report.md >> "$GITHUB_STEP_SUMMARY"
           # 0 go, 1 no-go, 2 partial are all results worth keeping; 3 is a config error
           test "$code" -ne 3
-          # keep only a complete recording: 90 mapping calls (30 batches x 3 runs)
-          test "$(wc -l < recordings/mapper.jsonl)" -eq 90 || { echo "incomplete recording, not committing"; exit 1; }
+          # keep only a complete recording: 180 calls (30 batches x 3 runs x mapping + message)
+          test "$(wc -l < recordings/mapper.jsonl)" -eq 180 || { echo "incomplete recording, not committing"; exit 1; }
       - name: Rebuild the demo page from the recording
         run: bash scripts/build_demo.sh
       - name: Commit the recording

@@ -1,9 +1,11 @@
-"""The judgment step: one Claude call per batch.
+"""The judgment step: two Claude calls per batch.
 
 Rules cannot decide these, so the model does: whether a client is a person or a company and
 how the name splits, which client a matter belongs to when the old system typed the name by
 hand, whether two client rows are the same client, where an unfamiliar column belongs in
-Clio, a plain note for each record a person should check, and the message to the firm.
+Clio, a plain note for each record a person should check. Then, once code has applied the guardrails and
+decided load or hold, a second call writes the message to the firm from that final state, so the
+message never guesses what the guardrails will do.
 
 The model never touches a number, an ID or a date. It returns references and decisions only,
 and the pipeline applies them with rules as guardrails (see pipeline.py).
@@ -34,7 +36,7 @@ _str_or_null = {"type": ["string", "null"]}
 SCHEMA = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["contacts", "matter_clients", "column_mapping", "review_notes", "summary"],
+    "required": ["contacts", "matter_clients", "column_mapping", "review_notes"],
     "properties": {
         "contacts": {
             "type": "array",
@@ -84,8 +86,14 @@ SCHEMA = {
                 "properties": {"record_id": {"type": "string"}, "note": {"type": "string"}},
             },
         },
-        "summary": {"type": "string"},
     },
+}
+
+SUMMARY_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["summary"],
+    "properties": {"summary": {"type": "string"}},
 }
 
 SYSTEM = """You are the migration engineer moving a law firm's data from its old practice management system into Clio Manage. You handle one batch at a time. Rules have already cleaned the values and tied the batch to the old system's printed report; you make the calls rules cannot.
@@ -100,8 +108,19 @@ For each matter, pick the client it belongs to (client_id = a legacy_id from thi
 For each extra column listed, choose the Clio field it belongs in: responsible attorney, practice area, location (office), a matter custom field (case numbers and other matter facts with no standard field), the contact's LEDES client id or title, or ignore only for data with no value to the firm.
 
 review_notes: for every record a person must check (an uncertain match, a possible duplicate, a value the rules flagged), one or two plain sentences to the firm's operations lead saying exactly which record to look at and ending with the exact answer you need (for example: "Please send the court case number for matter M2022 as it appears on the filing."). No jargon.
+"""
 
-summary: three to five plain sentences to the firm's operations lead. The rule is fixed: the batch is on hold if any reconciliation line does not tie; otherwise it is loaded into Clio as soon as you reply, and records waiting for review stay out until someone answers. So state that the batch is being loaded or is on hold, give the numbers that tie or do not tie (from the reconciliation given to you), and name every record still waiting for review. Ask only for the answers the review queue or a line that does not tie actually needs; a batch that ties needs no approval to load. Never say a held batch is ready or loaded."""
+
+SUMMARY_SYSTEM = """You write the message to a law firm's operations lead about one batch of their data moving from the old practice management system into Clio Manage. Code has already decided everything; you report it. Use only the facts given.
+
+Three to five plain sentences, no jargon:
+- If the decision is load: say the batch is being loaded into Clio, give the counts and totals that tie, and name every record in the review queue (it stays out of Clio until someone answers). Ask only for the answers the review queue needs; a batch that ties needs no approval to load. If the queue is empty, ask for nothing.
+- If the decision is hold: say nothing has been loaded, name each line that does not tie with both numbers (the old system's report and the export), and say what the firm needs to check. Name review-queue records only if the queue lists them.
+- Never mention a record as waiting for review unless it is in the review queue, and never say a held batch is ready or loaded."""
+
+
+def summary_prompt(facts: dict) -> str:
+    return "Final state of the batch:\n" + json.dumps(facts, indent=1, sort_keys=True)
 
 
 def prompt(view: dict) -> str:
@@ -121,15 +140,20 @@ class ClaudeMapper:
         self.effort = effort
 
     def __call__(self, view: dict) -> dict:
+        """The mapping decisions for a batch view, or the message to the firm for a final-state view (task: summary)."""
+        if view.get("task") == "summary":
+            system, schema, content = SUMMARY_SYSTEM, SUMMARY_SCHEMA, summary_prompt(view["facts"])
+        else:
+            system, schema, content = SYSTEM, SCHEMA, prompt(view)
         start = time.perf_counter()
         response = self.client.beta.messages.create(
             model=self.model,
             max_tokens=16000,
             betas=["server-side-fallback-2026-07-01"],
             fallbacks="default",
-            output_config={"effort": self.effort, "format": {"type": "json_schema", "schema": SCHEMA}},
-            system=SYSTEM,
-            messages=[{"role": "user", "content": prompt(view)}],
+            output_config={"effort": self.effort, "format": {"type": "json_schema", "schema": schema}},
+            system=system,
+            messages=[{"role": "user", "content": content}],
         )
         latency = time.perf_counter() - start
         if response.stop_reason == "refusal":

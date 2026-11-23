@@ -13,6 +13,7 @@ print(
         {
             "model": meta[0]["model"],
             "calls": len(meta),
+            "calls_per_batch": 2,
             "mean_latency_s": sum(latencies) / len(latencies),
             "p90_latency_s": latencies[int(0.9 * (len(latencies) - 1))],
             "mean_cost_usd": sum(m["cost_usd"] for m in meta) / len(meta),

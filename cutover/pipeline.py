@@ -1,4 +1,4 @@
-"""One batch, end to end: clean, reconcile, map (Claude), apply guardrails, decide, load.
+"""One batch, end to end: clean, reconcile, map (Claude), apply guardrails, decide, load, report (Claude).
 
 Order matters. Rules clean every value and tie the batch to the old system's report before the
 model sees it. The model's calls (client types, name splits, matter-to-client matches,
@@ -27,6 +27,20 @@ CORE = {
 }
 
 
+ASK = "please send the value exactly as the old system shows it for this record"
+
+
+def _merge_meta(a: dict, b: dict) -> dict:
+    """Cost and latency of both Claude calls for a batch."""
+    if not a or not b:
+        return a or b
+    return {
+        "model": a.get("model"),
+        "cost_usd": a.get("cost_usd", 0.0) + b.get("cost_usd", 0.0),
+        "latency_s": round(a.get("latency_s", 0.0) + b.get("latency_s", 0.0), 3),
+    }
+
+
 def _queue(queue: list[dict], kind: str, rid: str, reason: str) -> None:
     if not any(q["id"] == rid and q["type"] == kind for q in queue):
         queue.append({"type": kind, "id": rid, "reason": reason})
@@ -42,7 +56,7 @@ def clean_batch(raw: dict) -> tuple[dict, list[dict]]:
         try:
             cid = clean.legacy_id(rid)
         except clean.CleanError as e:
-            _queue(queue, "client", rid, str(e))
+            _queue(queue, "client", rid, f"{e}; {ASK}")
             cid = rid
         extras = {k: clean.text(v) for k, v in row.items() if k not in CORE["clients"]}
         out["clients"].append(
@@ -61,24 +75,35 @@ def clean_batch(raw: dict) -> tuple[dict, list[dict]]:
         try:
             m["id"] = clean.legacy_id(rid)
         except clean.CleanError as e:
-            _queue(queue, "matter", rid, str(e))
+            _queue(queue, "matter", rid, f"{e}; {ASK}")
         cref = clean.text(row.get("Client ID"))
         if cref:
             if clean.mangled(cref):
-                _queue(queue, "matter", m["id"], f"client ID {cref!r} looks rewritten by a spreadsheet")
+                _queue(
+                    queue,
+                    "matter",
+                    m["id"],
+                    f"client ID {cref!r} looks rewritten by a spreadsheet; {ASK}",
+                )
             else:
                 m["client_id_text"] = cref
         try:
             m["open_date"] = clean.iso_date(row.get("Opened"))
         except clean.CleanError as e:
             m["open_date"] = None
-            _queue(queue, "matter", m["id"], str(e))
+            _queue(queue, "matter", m["id"], f"{e}; {ASK}")
         m["description"] = clean.text(row.get("Description")) or "(no description in old system)"
         m["status"] = "closed" if clean.text(row.get("Status")).lower().startswith("clos") else "open"
         m["extras"] = {k: clean.text(v) for k, v in row.items() if k not in CORE["matters"]}
         for col, val in m["extras"].items():
             if clean.is_id_column(col) and clean.mangled(val):
-                _queue(queue, "matter", m["id"], f"{col} value {val!r} looks rewritten by a spreadsheet")
+                _queue(
+                    queue,
+                    "matter",
+                    m["id"],
+                    f"{col} {val!r} looks rewritten by a spreadsheet; please send the original {col} "
+                    "for this matter from the old system or the filing",
+                )
         out["matters"].append(m)
 
     for row in raw.get("time", []):
@@ -95,7 +120,7 @@ def clean_batch(raw: dict) -> tuple[dict, list[dict]]:
                 }
             )
         except clean.CleanError as e:
-            _queue(queue, "time", rid, str(e))
+            _queue(queue, "time", rid, f"{e}; {ASK}")
 
     for row in raw.get("invoices", []):
         rid = clean.text(row.get("Invoice No"))
@@ -110,14 +135,14 @@ def clean_batch(raw: dict) -> tuple[dict, list[dict]]:
                 }
             )
         except clean.CleanError as e:
-            _queue(queue, "invoice", rid, str(e))
+            _queue(queue, "invoice", rid, f"{e}; {ASK}")
 
     for row in raw.get("trust", []):
         mid = clean.text(row.get("Matter No"))
         try:
             out["trust"].append({"matter": mid, "balance": clean.money(row.get("Balance"))})
         except clean.CleanError as e:
-            _queue(queue, "trust", mid, str(e))
+            _queue(queue, "trust", mid, f"{e}; {ASK}")
     return out, queue
 
 
@@ -265,6 +290,16 @@ def run(raw: dict, mapper: Callable[[dict], dict], make_target: Callable[[], Any
     trust = [{"matter": t["matter"], "balance": str(t["balance"])} for t in batch["trust"]]
 
     decision = "hold" if breaks else "load"
+    facts = {
+        "decision": decision,
+        "lines_that_do_not_tie": [{k: r[k] for k in ("measure", "key", "source", "migrated")} for r in rows if not r["ties"]],
+        "lines_that_tie": [{k: r[k] for k in ("measure", "key", "source")} for r in rows if r["ties"]],
+        "review_queue": [dict(q) for q in queue],
+        "clients_loading": sorted(c["id"] for c in contacts if c["route"] == "load") if decision == "load" else [],
+        "matters_loading": sorted(m["id"] for m in matters if m["route"] == "load") if decision == "load" else [],
+    }
+    report = mapper({"task": "summary", "facts": facts})
+    meta = _merge_meta(meta, report.get("_meta", {}))
     load_plan: list[dict] = []
     if decision == "load":
         api = make_target()
@@ -302,6 +337,6 @@ def run(raw: dict, mapper: Callable[[dict], dict], make_target: Callable[[], Any
         "mapping": mapping,
         "queue": queue,
         "load_plan": load_plan,
-        "summary": decisions.get("summary", ""),
+        "summary": report.get("summary", ""),
         "_meta": meta,
     }
