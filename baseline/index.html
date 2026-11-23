@@ -21,7 +21,7 @@ font-size:12px;margin:4px 0}code{font-size:13px}footer{margin-top:40px;font-size
 </style></head><body><main>
 <h1>Migration cut-over gate <span class="decision">NO-GO</span></h1>
 <p>A plain spreadsheet import on the same 30 batches: it drops leading zeros, guesses clients, never reconciles and always loads, so the gate blocks it. <a href='../'>Back to the Claude pipeline</a>.</p>
-<p class="muted">Agent <code>agent:csv_import</code>, 30 cases, 1 run(s). Agent cost $0.0000, judge cost $0.0000, mean latency 0.1 ms per case.</p>
+<p class="muted">Agent <code>agent:csv_import</code>, 30 cases, 1 run(s). Agent cost $0.0000, judge cost $0.0000, mean latency 0.3 ms per case.</p>
 <ul><li>run 1: 18 critical failure(s): requests_valid on case r02, ids_preserved on case m01, amounts_exact on case m01, ids_preserved on case m02, amounts_exact on case m02, requests_valid on case m03, amounts_exact on case m04, amounts_exact on case m06, no_wrong_client on case m07, no_wrong_client on case a01, no_wrong_client on case a03, no_wrong_client on case a04, no_wrong_client on case a05, hold_on_break on case b01, hold_on_break on case b02, hold_on_break on case b03, hold_on_break on case b04, amounts_exact on case b06</li><li>run 1: all batches passed 6 of 30, needs 28 (no-go)</li><li>run 1: clean exports passed 4 of 10, needs 10 (no-go)</li><li>run 1: reconciliation breaks passed 1 of 6, needs 6 (no-go)</li><li>run 1: messy values passed 0 of 8, needs 7 (no-go)</li><li>run 1: hand-typed client matches passed 1 of 6, needs 5 (partial)</li></ul>
 <h2>Pass counts by run</h2><div class="scroll"><table><tr><th>Run</th><th>Passed</th>
 <th>Critical failures</th></tr><tr><td>1</td><td>6 of 30</td><td>18</td></tr></table></div>
