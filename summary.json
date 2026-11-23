@@ -2,10 +2,10 @@
   "model": "claude-opus-5-5",
   "calls": 180,
   "calls_per_batch": 2,
-  "mean_latency_s": 2.939483333333333,
-  "p90_latency_s": 4.089,
-  "mean_cost_usd": 0.009355977777777778,
-  "mapper_cost_usd": 1.684076,
-  "judge_calls": 206,
-  "judge_cost_usd": 0.864104
+  "mean_latency_s": 2.7757722222222223,
+  "p90_latency_s": 3.791,
+  "mean_cost_usd": 0.009342133333333334,
+  "mapper_cost_usd": 1.681584,
+  "judge_calls": 103,
+  "judge_cost_usd": 0.428436
 }
