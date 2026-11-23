@@ -1,0 +1,6006 @@
+{
+  "agent": "agent:csv_import",
+  "gate": "Migration cut-over gate",
+  "runs": 1,
+  "decision": "no-go",
+  "summary": {
+    "by_run": [
+      {
+        "run": 1,
+        "passed": 6,
+        "total": 30,
+        "critical": 18
+      }
+    ],
+    "total_cost_usd": 0.0,
+    "total_judge_cost_usd": 0.0,
+    "mean_latency_s": 0.000236
+  },
+  "gate_result": {
+    "decision": "no-go",
+    "reasons": [
+      "run 1: 18 critical failure(s): requests_valid on case r02, ids_preserved on case m01, amounts_exact on case m01, ids_preserved on case m02, amounts_exact on case m02, requests_valid on case m03, amounts_exact on case m04, amounts_exact on case m06, no_wrong_client on case m07, no_wrong_client on case a01, no_wrong_client on case a03, no_wrong_client on case a04, no_wrong_client on case a05, hold_on_break on case b01, hold_on_break on case b02, hold_on_break on case b03, hold_on_break on case b04, amounts_exact on case b06",
+      "run 1: all batches passed 6 of 30, needs 28 (no-go)",
+      "run 1: clean exports passed 4 of 10, needs 10 (no-go)",
+      "run 1: reconciliation breaks passed 1 of 6, needs 6 (no-go)",
+      "run 1: messy values passed 0 of 8, needs 7 (no-go)",
+      "run 1: hand-typed client matches passed 1 of 6, needs 5 (partial)"
+    ],
+    "rules": [
+      {
+        "name": "all batches",
+        "run": 1,
+        "passed": 6,
+        "total": 30,
+        "required": 28,
+        "held": false,
+        "on_fail": "no-go"
+      },
+      {
+        "name": "clean exports",
+        "run": 1,
+        "passed": 4,
+        "total": 10,
+        "required": 10,
+        "held": false,
+        "on_fail": "no-go"
+      },
+      {
+        "name": "reconciliation breaks",
+        "run": 1,
+        "passed": 1,
+        "total": 6,
+        "required": 6,
+        "held": false,
+        "on_fail": "no-go"
+      },
+      {
+        "name": "messy values",
+        "run": 1,
+        "passed": 0,
+        "total": 8,
+        "required": 7,
+        "held": false,
+        "on_fail": "no-go"
+      },
+      {
+        "name": "hand-typed client matches",
+        "run": 1,
+        "passed": 1,
+        "total": 6,
+        "required": 5,
+        "held": false,
+        "on_fail": "partial"
+      }
+    ],
+    "critical_failures": {
+      "1": [
+        {
+          "case": "r02",
+          "check": "requests_valid"
+        },
+        {
+          "case": "m01",
+          "check": "ids_preserved"
+        },
+        {
+          "case": "m01",
+          "check": "amounts_exact"
+        },
+        {
+          "case": "m02",
+          "check": "ids_preserved"
+        },
+        {
+          "case": "m02",
+          "check": "amounts_exact"
+        },
+        {
+          "case": "m03",
+          "check": "requests_valid"
+        },
+        {
+          "case": "m04",
+          "check": "amounts_exact"
+        },
+        {
+          "case": "m06",
+          "check": "amounts_exact"
+        },
+        {
+          "case": "m07",
+          "check": "no_wrong_client"
+        },
+        {
+          "case": "a01",
+          "check": "no_wrong_client"
+        },
+        {
+          "case": "a03",
+          "check": "no_wrong_client"
+        },
+        {
+          "case": "a04",
+          "check": "no_wrong_client"
+        },
+        {
+          "case": "a05",
+          "check": "no_wrong_client"
+        },
+        {
+          "case": "b01",
+          "check": "hold_on_break"
+        },
+        {
+          "case": "b02",
+          "check": "hold_on_break"
+        },
+        {
+          "case": "b03",
+          "check": "hold_on_break"
+        },
+        {
+          "case": "b04",
+          "check": "hold_on_break"
+        },
+        {
+          "case": "b06",
+          "check": "amounts_exact"
+        }
+      ]
+    }
+  },
+  "checks": [
+    {
+      "id": "ids_preserved",
+      "text": "Every client, matter, time entry and invoice number survives exactly as exported.",
+      "critical": true
+    },
+    {
+      "id": "no_wrong_client",
+      "text": "No matter is attached to the wrong client, and no matter that needs a person's call is attached at all.",
+      "critical": true
+    },
+    {
+      "id": "clear_matches_made",
+      "text": "Matters with one clear client are matched, not sent to review.",
+      "critical": false
+    },
+    {
+      "id": "review_flagged",
+      "text": "Every record that needs a person (duplicate, unclear match, damaged value) is in the review queue.",
+      "critical": false
+    },
+    {
+      "id": "dates_correct",
+      "text": "Every open date and time-entry date is the right calendar date (YYYY-MM-DD).",
+      "critical": false
+    },
+    {
+      "id": "amounts_exact",
+      "text": "Balance owed per matter and unbilled hours match the export to the cent.",
+      "critical": true
+    },
+    {
+      "id": "trust_untouched",
+      "text": "Trust balances are reported exactly and never written to Clio by software.",
+      "critical": true
+    },
+    {
+      "id": "breaks_found",
+      "text": "The batch reports exactly the reconciliation lines that do not tie, no more and no fewer.",
+      "critical": false
+    },
+    {
+      "id": "hold_on_break",
+      "text": "A batch that does not tie to the old system's report is held, never loaded.",
+      "critical": true
+    },
+    {
+      "id": "load_when_tied",
+      "text": "A batch that ties loads.",
+      "critical": false
+    },
+    {
+      "id": "queued_not_loaded",
+      "text": "Nothing waiting in the review queue is written to Clio.",
+      "critical": true
+    },
+    {
+      "id": "requests_valid",
+      "text": "Every request in the load plan is valid against Clio's published v4 API schema, with no unknown field names.",
+      "critical": true
+    },
+    {
+      "id": "contacts_right",
+      "text": "Each client is the right type (person or company) and a person's name is split correctly.",
+      "critical": false
+    },
+    {
+      "id": "columns_mapped",
+      "text": "Each unfamiliar column goes to the right Clio field.",
+      "critical": false
+    },
+    {
+      "id": "queue_explained",
+      "text": "Every record in the review queue carries a reason.",
+      "critical": false
+    }
+  ],
+  "cases": [
+    {
+      "id": "r01",
+      "group": "routine",
+      "title": "One person, one matter, clean export",
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "failed_checks": [],
+          "error": "",
+          "latency_s": 0.0005,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "pass",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1001",
+                "type": "Person",
+                "name": "Ana Ruiz",
+                "first_name": "Ana",
+                "last_name": "Ruiz",
+                "email": "ana.ruiz@example.com",
+                "phone": "(312) 555-0141",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2001",
+                "client_id": "C1001",
+                "description": "Ruiz - lease dispute",
+                "status": "open",
+                "open_date": "2025-02-11",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3001",
+                "matter": "M2001",
+                "date": "2025-03-02",
+                "hours": "1.50",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              },
+              {
+                "id": "T3002",
+                "matter": "M2001",
+                "date": "2025-03-09",
+                "hours": "0.75",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [
+              {
+                "matter": "M2001",
+                "owed": "400.00",
+                "invoices": [
+                  {
+                    "id": "I4001"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [
+              {
+                "matter": "M2001",
+                "balance": "2500.00"
+              }
+            ],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Ana Ruiz",
+                    "first_name": "Ana",
+                    "last_name": "Ruiz",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "ana.ruiz@example.com",
+                        "default_email": true
+                      }
+                    ],
+                    "phone_numbers": [
+                      {
+                        "name": "Work",
+                        "number": "(312) 555-0141",
+                        "default_number": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Ruiz - lease dispute",
+                    "status": "open",
+                    "open_date": "2025-02-11",
+                    "client_reference": "M2001"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "r02",
+      "group": "routine",
+      "title": "A company with two matters",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "dates_correct",
+            "requests_valid",
+            "contacts_right"
+          ],
+          "error": "",
+          "latency_s": 0.0004,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "fail",
+              "reason": "M2002 1/14/2025 (should be 2025-01-14); M2003 3/3/2025 (should be 2025-03-03); T3003 1/20/2025 (should be 2025-01-20); T3004 3/10/2025 (should be 2025-03-10)"
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "fail",
+              "reason": "/matters.json: data/open_date: '1/14/2025' is not a 'date'; /matters.json: data/open_date: '3/3/2025' is not a 'date'"
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "C1002 type Person (should be Company)"
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1002",
+                "type": "Person",
+                "name": "Lakeview Dental Group, P.C.",
+                "first_name": "Lakeview",
+                "last_name": "Dental Group, P.C.",
+                "email": "office@lakeviewdental.example",
+                "phone": "312-555-0177",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2002",
+                "client_id": "C1002",
+                "description": "Employment agreement review",
+                "status": "open",
+                "open_date": "1/14/2025",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "M2003",
+                "client_id": "C1002",
+                "description": "Office lease renewal",
+                "status": "open",
+                "open_date": "3/3/2025",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3003",
+                "matter": "M2002",
+                "date": "1/20/2025",
+                "hours": "2.00",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              },
+              {
+                "id": "T3004",
+                "matter": "M2003",
+                "date": "3/10/2025",
+                "hours": "1.25",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [
+              {
+                "matter": "M2002",
+                "owed": "0.00",
+                "invoices": [
+                  {
+                    "id": "I4002"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Lakeview Dental Group, P.C.",
+                    "first_name": "Lakeview",
+                    "last_name": "Dental Group, P.C.",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "office@lakeviewdental.example",
+                        "default_email": true
+                      }
+                    ],
+                    "phone_numbers": [
+                      {
+                        "name": "Work",
+                        "number": "312-555-0177",
+                        "default_number": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Employment agreement review",
+                    "status": "open",
+                    "open_date": "1/14/2025",
+                    "client_reference": "M2002"
+                  }
+                },
+                "errors": [
+                  "data/open_date: '1/14/2025' is not a 'date'"
+                ],
+                "id": 1002
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Office lease renewal",
+                    "status": "open",
+                    "open_date": "3/3/2025",
+                    "client_reference": "M2003"
+                  }
+                },
+                "errors": [
+                  "data/open_date: '3/3/2025' is not a 'date'"
+                ],
+                "id": 1003
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "r03",
+      "group": "routine",
+      "title": "Last-name-first client name",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "contacts_right"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "C1003 name 'Okafor,' / 'Chidi' (should be 'Chidi' / 'Okafor')"
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1003",
+                "type": "Person",
+                "name": "Okafor, Chidi",
+                "first_name": "Okafor,",
+                "last_name": "Chidi",
+                "email": "chidi.okafor@example.com",
+                "phone": "773 555 0102",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2004",
+                "client_id": "C1003",
+                "description": "Okafor - estate plan",
+                "status": "open",
+                "open_date": "2024-11-05",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3005",
+                "matter": "M2004",
+                "date": "2024-11-12",
+                "hours": "3.00",
+                "rate": "295.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [
+              {
+                "matter": "M2004",
+                "owed": "885.00",
+                "invoices": [
+                  {
+                    "id": "I4003"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Okafor, Chidi",
+                    "first_name": "Okafor,",
+                    "last_name": "Chidi",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "chidi.okafor@example.com",
+                        "default_email": true
+                      }
+                    ],
+                    "phone_numbers": [
+                      {
+                        "name": "Work",
+                        "number": "773 555 0102",
+                        "default_number": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Okafor - estate plan",
+                    "status": "open",
+                    "open_date": "2024-11-05",
+                    "client_reference": "M2004"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "r04",
+      "group": "routine",
+      "title": "Two people, one matter each",
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "failed_checks": [],
+          "error": "",
+          "latency_s": 0.0004,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "pass",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1004",
+                "type": "Person",
+                "name": "Grace Lin",
+                "first_name": "Grace",
+                "last_name": "Lin",
+                "email": "glin@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "C1005",
+                "type": "Person",
+                "name": "Marcus Bell",
+                "first_name": "Marcus",
+                "last_name": "Bell",
+                "email": "mbell@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2005",
+                "client_id": "C1004",
+                "description": "Lin - immigration petition",
+                "status": "open",
+                "open_date": "2025-04-01",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "M2006",
+                "client_id": "C1005",
+                "description": "Bell - traffic matter",
+                "status": "open",
+                "open_date": "2025-04-03",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3006",
+                "matter": "M2005",
+                "date": "2025-04-02",
+                "hours": "1.00",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              },
+              {
+                "id": "T3007",
+                "matter": "M2006",
+                "date": "2025-04-04",
+                "hours": "0.50",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [],
+            "trust_handoff": [
+              {
+                "matter": "M2005",
+                "balance": "1000.00"
+              }
+            ],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Grace Lin",
+                    "first_name": "Grace",
+                    "last_name": "Lin",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "glin@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Marcus Bell",
+                    "first_name": "Marcus",
+                    "last_name": "Bell",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "mbell@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Lin - immigration petition",
+                    "status": "open",
+                    "open_date": "2025-04-01",
+                    "client_reference": "M2005"
+                  }
+                },
+                "errors": [],
+                "id": 1003
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1002
+                    },
+                    "description": "Bell - traffic matter",
+                    "status": "open",
+                    "open_date": "2025-04-03",
+                    "client_reference": "M2006"
+                  }
+                },
+                "errors": [],
+                "id": 1004
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "r05",
+      "group": "routine",
+      "title": "Closed matter with a paid-off invoice",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "contacts_right"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "C1006 type Person (should be Company)"
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1006",
+                "type": "Person",
+                "name": "Rivera Family Trust",
+                "first_name": "Rivera",
+                "last_name": "Family Trust",
+                "email": "trustee@riverafamily.example",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2007",
+                "client_id": "C1006",
+                "description": "Trust administration 2024",
+                "status": "open",
+                "open_date": "2024-06-17",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [],
+            "ledgers": [
+              {
+                "matter": "M2007",
+                "owed": "0.00",
+                "invoices": [
+                  {
+                    "id": "I4004"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Rivera Family Trust",
+                    "first_name": "Rivera",
+                    "last_name": "Family Trust",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "trustee@riverafamily.example",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Trust administration 2024",
+                    "status": "open",
+                    "open_date": "2024-06-17",
+                    "client_reference": "M2007"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "r06",
+      "group": "routine",
+      "title": "Middle initial in the name",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "contacts_right"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "C1007 name 'Ruiz,' / 'Ana M.' (should be 'Ana M.' / 'Ruiz')"
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1007",
+                "type": "Person",
+                "name": "Ruiz, Ana M.",
+                "first_name": "Ruiz,",
+                "last_name": "Ana M.",
+                "email": "amruiz@example.com",
+                "phone": "+1 (646) 555-0199",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2008",
+                "client_id": "C1007",
+                "description": "Ruiz - contract review",
+                "status": "open",
+                "open_date": "2025-05-20",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3008",
+                "matter": "M2008",
+                "date": "2025-05-21",
+                "hours": "2.25",
+                "rate": "410.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [
+              {
+                "matter": "M2008",
+                "owed": "922.50",
+                "invoices": [
+                  {
+                    "id": "I4005"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Ruiz, Ana M.",
+                    "first_name": "Ruiz,",
+                    "last_name": "Ana M.",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "amruiz@example.com",
+                        "default_email": true
+                      }
+                    ],
+                    "phone_numbers": [
+                      {
+                        "name": "Work",
+                        "number": "+1 (646) 555-0199",
+                        "default_number": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Ruiz - contract review",
+                    "status": "open",
+                    "open_date": "2025-05-20",
+                    "client_reference": "M2008"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "r07",
+      "group": "routine",
+      "title": "School district client, three matters",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "contacts_right"
+          ],
+          "error": "",
+          "latency_s": 0.0003,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "C1008 type Person (should be Company)"
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1008",
+                "type": "Person",
+                "name": "Westbrook Unified School District",
+                "first_name": "Westbrook",
+                "last_name": "Unified School District",
+                "email": "legal@westbrook.example",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2009",
+                "client_id": "C1008",
+                "description": "Special education hearing",
+                "status": "open",
+                "open_date": "2025-01-06",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "M2010",
+                "client_id": "C1008",
+                "description": "Board policy update",
+                "status": "open",
+                "open_date": "2025-02-10",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "M2011",
+                "client_id": "C1008",
+                "description": "Facilities contract",
+                "status": "open",
+                "open_date": "2025-03-17",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3009",
+                "matter": "M2009",
+                "date": "2025-01-08",
+                "hours": "4.00",
+                "rate": "275.00",
+                "note": "Drafting",
+                "route": "load"
+              },
+              {
+                "id": "T3010",
+                "matter": "M2011",
+                "date": "2025-03-18",
+                "hours": "1.50",
+                "rate": "275.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [
+              {
+                "matter": "M2010",
+                "owed": "275.00",
+                "invoices": [
+                  {
+                    "id": "I4006"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Westbrook Unified School District",
+                    "first_name": "Westbrook",
+                    "last_name": "Unified School District",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "legal@westbrook.example",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Special education hearing",
+                    "status": "open",
+                    "open_date": "2025-01-06",
+                    "client_reference": "M2009"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Board policy update",
+                    "status": "open",
+                    "open_date": "2025-02-10",
+                    "client_reference": "M2010"
+                  }
+                },
+                "errors": [],
+                "id": 1003
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Facilities contract",
+                    "status": "open",
+                    "open_date": "2025-03-17",
+                    "client_reference": "M2011"
+                  }
+                },
+                "errors": [],
+                "id": 1004
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "r08",
+      "group": "routine",
+      "title": "Client and spouse as separate clients",
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "failed_checks": [],
+          "error": "",
+          "latency_s": 0.0004,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "pass",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1009",
+                "type": "Person",
+                "name": "David Cho",
+                "first_name": "David",
+                "last_name": "Cho",
+                "email": "dcho@example.com",
+                "phone": "917-555-0110",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "C1010",
+                "type": "Person",
+                "name": "Hannah Cho",
+                "first_name": "Hannah",
+                "last_name": "Cho",
+                "email": "hcho@example.com",
+                "phone": "917-555-0111",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2012",
+                "client_id": "C1009",
+                "description": "Cho - home purchase",
+                "status": "open",
+                "open_date": "2025-06-02",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "M2013",
+                "client_id": "C1010",
+                "description": "Cho - business formation",
+                "status": "open",
+                "open_date": "2025-06-09",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3011",
+                "matter": "M2012",
+                "date": "2025-06-03",
+                "hours": "1.00",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              },
+              {
+                "id": "T3012",
+                "matter": "M2013",
+                "date": "2025-06-10",
+                "hours": "1.00",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [],
+            "trust_handoff": [
+              {
+                "matter": "M2012",
+                "balance": "15000.00"
+              }
+            ],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "David Cho",
+                    "first_name": "David",
+                    "last_name": "Cho",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "dcho@example.com",
+                        "default_email": true
+                      }
+                    ],
+                    "phone_numbers": [
+                      {
+                        "name": "Work",
+                        "number": "917-555-0110",
+                        "default_number": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Hannah Cho",
+                    "first_name": "Hannah",
+                    "last_name": "Cho",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "hcho@example.com",
+                        "default_email": true
+                      }
+                    ],
+                    "phone_numbers": [
+                      {
+                        "name": "Work",
+                        "number": "917-555-0111",
+                        "default_number": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Cho - home purchase",
+                    "status": "open",
+                    "open_date": "2025-06-02",
+                    "client_reference": "M2012"
+                  }
+                },
+                "errors": [],
+                "id": 1003
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1002
+                    },
+                    "description": "Cho - business formation",
+                    "status": "open",
+                    "open_date": "2025-06-09",
+                    "client_reference": "M2013"
+                  }
+                },
+                "errors": [],
+                "id": 1004
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "r09",
+      "group": "routine",
+      "title": "Matter with no time yet",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "contacts_right"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "C1011 type Person (should be Company)"
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1011",
+                "type": "Person",
+                "name": "Northside Bakery LLC",
+                "first_name": "Northside",
+                "last_name": "Bakery LLC",
+                "email": "owner@northsidebakery.example",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2014",
+                "client_id": "C1011",
+                "description": "Trademark filing",
+                "status": "open",
+                "open_date": "2025-07-01",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [],
+            "ledgers": [],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Northside Bakery LLC",
+                    "first_name": "Northside",
+                    "last_name": "Bakery LLC",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "owner@northsidebakery.example",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Trademark filing",
+                    "status": "open",
+                    "open_date": "2025-07-01",
+                    "client_reference": "M2014"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "r10",
+      "group": "routine",
+      "title": "Several time entries and two invoices",
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "failed_checks": [],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "pass",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1012",
+                "type": "Person",
+                "name": "Priya Nair",
+                "first_name": "Priya",
+                "last_name": "Nair",
+                "email": "priya.nair@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2015",
+                "client_id": "C1012",
+                "description": "Nair - custody",
+                "status": "open",
+                "open_date": "2025-02-03",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3013",
+                "matter": "M2015",
+                "date": "2025-02-04",
+                "hours": "1.10",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              },
+              {
+                "id": "T3014",
+                "matter": "M2015",
+                "date": "2025-02-11",
+                "hours": "0.40",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              },
+              {
+                "id": "T3015",
+                "matter": "M2015",
+                "date": "2025-02-18",
+                "hours": "2.30",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [
+              {
+                "matter": "M2015",
+                "owed": "830.00",
+                "invoices": [
+                  {
+                    "id": "I4007"
+                  },
+                  {
+                    "id": "I4008"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [
+              {
+                "matter": "M2015",
+                "balance": "3000.00"
+              }
+            ],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Priya Nair",
+                    "first_name": "Priya",
+                    "last_name": "Nair",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "priya.nair@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Nair - custody",
+                    "status": "open",
+                    "open_date": "2025-02-03",
+                    "client_reference": "M2015"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "m01",
+      "group": "messy",
+      "title": "Client and matter numbers with leading zeros",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "ids_preserved",
+            "clear_matches_made",
+            "dates_correct",
+            "amounts_exact",
+            "contacts_right"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "fail",
+              "reason": "missing or rewritten: 00077, 000912, 0031, 00417"
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "fail",
+              "reason": "not matched: 000912"
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "fail",
+              "reason": "000912 None (should be 2025-01-09); 0031 None (should be 2025-01-10)"
+            },
+            "amounts_exact": {
+              "result": "fail",
+              "reason": "owed 000912 None (should be 350.00)"
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "00417 type None (should be Person); 00417 name None / None (should be 'Tomas' / 'Weber')"
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "417",
+                "type": "Person",
+                "name": "Tomas Weber",
+                "first_name": "Tomas",
+                "last_name": "Weber",
+                "email": "tweber@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "912",
+                "client_id": "417",
+                "description": "Weber - landlord claim",
+                "status": "open",
+                "open_date": "2025-01-09",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "31",
+                "matter": "912",
+                "date": "2025-01-10",
+                "hours": "1.00",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [
+              {
+                "matter": "912",
+                "owed": "350.00",
+                "invoices": [
+                  {
+                    "id": "77"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Tomas Weber",
+                    "first_name": "Tomas",
+                    "last_name": "Weber",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "tweber@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Weber - landlord claim",
+                    "status": "open",
+                    "open_date": "2025-01-09",
+                    "client_reference": "912"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "m02",
+      "group": "messy",
+      "title": "Sixteen-digit matter reference kept as text",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "ids_preserved",
+            "clear_matches_made",
+            "dates_correct",
+            "amounts_exact",
+            "contacts_right"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "fail",
+              "reason": "missing or rewritten: 4012888888881881"
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "fail",
+              "reason": "not matched: 4012888888881881"
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "fail",
+              "reason": "4012888888881881 None (should be 2025-03-12)"
+            },
+            "amounts_exact": {
+              "result": "fail",
+              "reason": "owed 4012888888881881 None (should be 1575.00)"
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "C1013 type Person (should be Company)"
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1013",
+                "type": "Person",
+                "name": "Bayside Cargo Partners LP",
+                "first_name": "Bayside",
+                "last_name": "Cargo Partners LP",
+                "email": "ops@baysidecargo.example",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "4.01289E+15",
+                "client_id": "C1013",
+                "description": "Cargo claim arbitration",
+                "status": "open",
+                "open_date": "2025-03-12",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3016",
+                "matter": "4.01289E+15",
+                "date": "2025-03-13",
+                "hours": "3.50",
+                "rate": "450.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [
+              {
+                "matter": "4.01289E+15",
+                "owed": "1575.00",
+                "invoices": [
+                  {
+                    "id": "I4009"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Bayside Cargo Partners LP",
+                    "first_name": "Bayside",
+                    "last_name": "Cargo Partners LP",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "ops@baysidecargo.example",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Cargo claim arbitration",
+                    "status": "open",
+                    "open_date": "2025-03-12",
+                    "client_reference": "4.01289E+15"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "m03",
+      "group": "messy",
+      "title": "Four date formats in one export",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "dates_correct",
+            "requests_valid"
+          ],
+          "error": "",
+          "latency_s": 0.0003,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "fail",
+              "reason": "M2016 04-Mar-25 (should be 2025-03-04); M2017 March 17, 2025 (should be 2025-03-17); T3017 3/5/25 (should be 2025-03-05); T3018 45740 (should be 2025-03-24)"
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "fail",
+              "reason": "/matters.json: data/open_date: '04-Mar-25' is not a 'date'; /matters.json: data/open_date: 'March 17, 2025' is not a 'date'"
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1014",
+                "type": "Person",
+                "name": "Elena Petrova",
+                "first_name": "Elena",
+                "last_name": "Petrova",
+                "email": "epetrova@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2016",
+                "client_id": "C1014",
+                "description": "Petrova - visa renewal",
+                "status": "open",
+                "open_date": "04-Mar-25",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "M2017",
+                "client_id": "C1014",
+                "description": "Petrova - name change",
+                "status": "open",
+                "open_date": "March 17, 2025",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3017",
+                "matter": "M2016",
+                "date": "3/5/25",
+                "hours": "1.00",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              },
+              {
+                "id": "T3018",
+                "matter": "M2017",
+                "date": "45740",
+                "hours": "0.50",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [
+              {
+                "matter": "M2016",
+                "owed": "350.00",
+                "invoices": [
+                  {
+                    "id": "I4010"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Elena Petrova",
+                    "first_name": "Elena",
+                    "last_name": "Petrova",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "epetrova@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Petrova - visa renewal",
+                    "status": "open",
+                    "open_date": "04-Mar-25",
+                    "client_reference": "M2016"
+                  }
+                },
+                "errors": [
+                  "data/open_date: '04-Mar-25' is not a 'date'"
+                ],
+                "id": 1002
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Petrova - name change",
+                    "status": "open",
+                    "open_date": "March 17, 2025",
+                    "client_reference": "M2017"
+                  }
+                },
+                "errors": [
+                  "data/open_date: 'March 17, 2025' is not a 'date'"
+                ],
+                "id": 1003
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "m04",
+      "group": "messy",
+      "title": "Credit note in accounting brackets",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "amounts_exact",
+            "contacts_right"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "fail",
+              "reason": "owed M2018 4650.00 (should be 2150.00)"
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "C1015 type Person (should be Company)"
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1015",
+                "type": "Person",
+                "name": "Brightwater Logistics Inc.",
+                "first_name": "Brightwater",
+                "last_name": "Logistics Inc.",
+                "email": "ap@brightwater.example",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2018",
+                "client_id": "C1015",
+                "description": "Vendor contract dispute",
+                "status": "open",
+                "open_date": "2025-02-02",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [],
+            "ledgers": [
+              {
+                "matter": "M2018",
+                "owed": "4650.00",
+                "invoices": [
+                  {
+                    "id": "I4011"
+                  },
+                  {
+                    "id": "I4012"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Brightwater Logistics Inc.",
+                    "first_name": "Brightwater",
+                    "last_name": "Logistics Inc.",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "ap@brightwater.example",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Vendor contract dispute",
+                    "status": "open",
+                    "open_date": "2025-02-02",
+                    "client_reference": "M2018"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "m05",
+      "group": "messy",
+      "title": "Phone numbers typed five ways",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "contacts_right"
+          ],
+          "error": "",
+          "latency_s": 0.0004,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "C1017 type Person (should be Company)"
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1016",
+                "type": "Person",
+                "name": "Samuel Osei",
+                "first_name": "Samuel",
+                "last_name": "Osei",
+                "email": "sosei@example.com",
+                "phone": "312.555.0123",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "C1017",
+                "type": "Person",
+                "name": "Osei Family Holdings LLC",
+                "first_name": "Osei",
+                "last_name": "Family Holdings LLC",
+                "email": "holdings@osei.example",
+                "phone": "1-312-555-0124",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2019",
+                "client_id": "C1016",
+                "description": "Osei - will",
+                "status": "open",
+                "open_date": "2025-05-05",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "M2020",
+                "client_id": "C1017",
+                "description": "Holding company setup",
+                "status": "open",
+                "open_date": "2025-05-06",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [],
+            "ledgers": [],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Samuel Osei",
+                    "first_name": "Samuel",
+                    "last_name": "Osei",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "sosei@example.com",
+                        "default_email": true
+                      }
+                    ],
+                    "phone_numbers": [
+                      {
+                        "name": "Work",
+                        "number": "312.555.0123",
+                        "default_number": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Osei Family Holdings LLC",
+                    "first_name": "Osei",
+                    "last_name": "Family Holdings LLC",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "holdings@osei.example",
+                        "default_email": true
+                      }
+                    ],
+                    "phone_numbers": [
+                      {
+                        "name": "Work",
+                        "number": "1-312-555-0124",
+                        "default_number": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Osei - will",
+                    "status": "open",
+                    "open_date": "2025-05-05",
+                    "client_reference": "M2019"
+                  }
+                },
+                "errors": [],
+                "id": 1003
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1002
+                    },
+                    "description": "Holding company setup",
+                    "status": "open",
+                    "open_date": "2025-05-06",
+                    "client_reference": "M2020"
+                  }
+                },
+                "errors": [],
+                "id": 1004
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "m06",
+      "group": "messy",
+      "title": "Hours exported as h:mm",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "amounts_exact"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "fail",
+              "reason": "check raised InvalidOperation: [<class 'decimal.ConversionSyntax'>]"
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1018",
+                "type": "Person",
+                "name": "Fatima Haddad",
+                "first_name": "Fatima",
+                "last_name": "Haddad",
+                "email": "fhaddad@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2021",
+                "client_id": "C1018",
+                "description": "Haddad - employment claim",
+                "status": "open",
+                "open_date": "2025-04-14",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3019",
+                "matter": "M2021",
+                "date": "2025-04-15",
+                "hours": "1:30",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              },
+              {
+                "id": "T3020",
+                "matter": "M2021",
+                "date": "2025-04-16",
+                "hours": "0:45",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              },
+              {
+                "id": "T3021",
+                "matter": "M2021",
+                "date": "2025-04-17",
+                "hours": "2.25",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Fatima Haddad",
+                    "first_name": "Fatima",
+                    "last_name": "Haddad",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "fhaddad@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Haddad - employment claim",
+                    "status": "open",
+                    "open_date": "2025-04-14",
+                    "client_reference": "M2021"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "m07",
+      "group": "messy",
+      "title": "A court case number Excel turned into a date",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "no_wrong_client",
+            "review_flagged",
+            "columns_mapped"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "fail",
+              "reason": "M2022 -> C1019 (should be review)"
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "fail",
+              "reason": "not queued: M2022"
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "fail",
+              "reason": "Court Case # -> None (should be matter.custom_field)"
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1019",
+                "type": "Person",
+                "name": "Jonah Feld",
+                "first_name": "Jonah",
+                "last_name": "Feld",
+                "email": "jfeld@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2022",
+                "client_id": "C1019",
+                "description": "Feld - small claims",
+                "status": "open",
+                "open_date": "2025-06-01",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "M2023",
+                "client_id": "C1019",
+                "description": "Feld - deed transfer",
+                "status": "open",
+                "open_date": "2025-06-02",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [],
+            "ledgers": [],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Jonah Feld",
+                    "first_name": "Jonah",
+                    "last_name": "Feld",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "jfeld@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Feld - small claims",
+                    "status": "open",
+                    "open_date": "2025-06-01",
+                    "client_reference": "M2022"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Feld - deed transfer",
+                    "status": "open",
+                    "open_date": "2025-06-02",
+                    "client_reference": "M2023"
+                  }
+                },
+                "errors": [],
+                "id": 1003
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "m08",
+      "group": "messy",
+      "title": "Unfamiliar columns: attorney, practice area, office",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "contacts_right",
+            "columns_mapped"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "C1020 type Person (should be Company)"
+            },
+            "columns_mapped": {
+              "result": "fail",
+              "reason": "Resp Atty -> None (should be matter.responsible_attorney); Practice -> None (should be matter.practice_area); Office -> None (should be matter.location); LEDES Client ID -> None (should be contact.ledes_client_id)"
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1020",
+                "type": "Person",
+                "name": "Greenway Property Management",
+                "first_name": "Greenway",
+                "last_name": "Property Management",
+                "email": "legal@greenwaypm.example",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2024",
+                "client_id": "C1020",
+                "description": "Eviction - unit 4B",
+                "status": "open",
+                "open_date": "2025-07-07",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3022",
+                "matter": "M2024",
+                "date": "2025-07-08",
+                "hours": "1.00",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Greenway Property Management",
+                    "first_name": "Greenway",
+                    "last_name": "Property Management",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "legal@greenwaypm.example",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Eviction - unit 4B",
+                    "status": "open",
+                    "open_date": "2025-07-07",
+                    "client_reference": "M2024"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "a01",
+      "group": "match",
+      "title": "Two clients named Smith, matter typed 'Smith, J.'",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "no_wrong_client",
+            "review_flagged"
+          ],
+          "error": "",
+          "latency_s": 0.0003,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "fail",
+              "reason": "M2026 -> C1021 (should be review)"
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "fail",
+              "reason": "not queued: M2026"
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1021",
+                "type": "Person",
+                "name": "John Smith",
+                "first_name": "John",
+                "last_name": "Smith",
+                "email": "john.smith@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "C1022",
+                "type": "Person",
+                "name": "Julia Smith",
+                "first_name": "Julia",
+                "last_name": "Smith",
+                "email": "julia.smith@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2025",
+                "client_id": "C1021",
+                "description": "Smith - DUI defense",
+                "status": "open",
+                "open_date": "2025-02-20",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "M2026",
+                "client_id": "C1021",
+                "description": "Smith - fence dispute",
+                "status": "open",
+                "open_date": "2025-02-21",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [],
+            "ledgers": [],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "John Smith",
+                    "first_name": "John",
+                    "last_name": "Smith",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "john.smith@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Julia Smith",
+                    "first_name": "Julia",
+                    "last_name": "Smith",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "julia.smith@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Smith - DUI defense",
+                    "status": "open",
+                    "open_date": "2025-02-20",
+                    "client_reference": "M2025"
+                  }
+                },
+                "errors": [],
+                "id": 1003
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Smith - fence dispute",
+                    "status": "open",
+                    "open_date": "2025-02-21",
+                    "client_reference": "M2026"
+                  }
+                },
+                "errors": [],
+                "id": 1004
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "a02",
+      "group": "match",
+      "title": "Company typed as 'ACME Corp' in the matter",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "contacts_right"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "C1023 type Person (should be Company)"
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1023",
+                "type": "Person",
+                "name": "Acme Corporation",
+                "first_name": "Acme",
+                "last_name": "Corporation",
+                "email": "legal@acme.example",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2027",
+                "client_id": "C1023",
+                "description": "Supplier agreement",
+                "status": "open",
+                "open_date": "2025-03-03",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3023",
+                "matter": "M2027",
+                "date": "2025-03-04",
+                "hours": "2.00",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Acme Corporation",
+                    "first_name": "Acme",
+                    "last_name": "Corporation",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "legal@acme.example",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Supplier agreement",
+                    "status": "open",
+                    "open_date": "2025-03-03",
+                    "client_reference": "M2027"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "a03",
+      "group": "match",
+      "title": "Same client entered twice with a typo",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "no_wrong_client",
+            "review_flagged"
+          ],
+          "error": "",
+          "latency_s": 0.0003,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "fail",
+              "reason": "M2028 -> C1024 (should be review)"
+            },
+            "clear_matches_made": {
+              "result": "na",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "fail",
+              "reason": "not queued: C1024, C1025, M2028"
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1024",
+                "type": "Person",
+                "name": "Katherine O'Neil",
+                "first_name": "Katherine",
+                "last_name": "O'Neil",
+                "email": "koneil@example.com",
+                "phone": "312-555-0188",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "C1025",
+                "type": "Person",
+                "name": "Katharine ONeil",
+                "first_name": "Katharine",
+                "last_name": "ONeil",
+                "email": "koneil@example.com",
+                "phone": "312-555-0188",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2028",
+                "client_id": "C1024",
+                "description": "O'Neil - divorce",
+                "status": "open",
+                "open_date": "2025-01-15",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [],
+            "ledgers": [],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Katherine O'Neil",
+                    "first_name": "Katherine",
+                    "last_name": "O'Neil",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "koneil@example.com",
+                        "default_email": true
+                      }
+                    ],
+                    "phone_numbers": [
+                      {
+                        "name": "Work",
+                        "number": "312-555-0188",
+                        "default_number": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Katharine ONeil",
+                    "first_name": "Katharine",
+                    "last_name": "ONeil",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "koneil@example.com",
+                        "default_email": true
+                      }
+                    ],
+                    "phone_numbers": [
+                      {
+                        "name": "Work",
+                        "number": "312-555-0188",
+                        "default_number": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "O'Neil - divorce",
+                    "status": "open",
+                    "open_date": "2025-01-15",
+                    "client_reference": "M2028"
+                  }
+                },
+                "errors": [],
+                "id": 1003
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "a04",
+      "group": "match",
+      "title": "Client name blank but client ID filled",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "no_wrong_client",
+            "clear_matches_made",
+            "contacts_right"
+          ],
+          "error": "",
+          "latency_s": 0.0003,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "fail",
+              "reason": "M2029 -> C1026 (should be C1027)"
+            },
+            "clear_matches_made": {
+              "result": "fail",
+              "reason": "not matched: M2029"
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "C1027 type Person (should be Company)"
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1026",
+                "type": "Person",
+                "name": "Victor Alvarez",
+                "first_name": "Victor",
+                "last_name": "Alvarez",
+                "email": "valvarez@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "C1027",
+                "type": "Person",
+                "name": "Alvarez Roofing Co.",
+                "first_name": "Alvarez",
+                "last_name": "Roofing Co.",
+                "email": "office@alvarezroofing.example",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2029",
+                "client_id": "C1026",
+                "description": "Lien enforcement",
+                "status": "open",
+                "open_date": "2025-04-22",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3024",
+                "matter": "M2029",
+                "date": "2025-04-23",
+                "hours": "1.00",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Victor Alvarez",
+                    "first_name": "Victor",
+                    "last_name": "Alvarez",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "valvarez@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Alvarez Roofing Co.",
+                    "first_name": "Alvarez",
+                    "last_name": "Roofing Co.",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "office@alvarezroofing.example",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Lien enforcement",
+                    "status": "open",
+                    "open_date": "2025-04-22",
+                    "client_reference": "M2029"
+                  }
+                },
+                "errors": [],
+                "id": 1003
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "a05",
+      "group": "match",
+      "title": "Matter names a client who is not in this batch",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "no_wrong_client",
+            "review_flagged"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "fail",
+              "reason": "M2031 -> C1028 (should be review)"
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "fail",
+              "reason": "not queued: M2031"
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1028",
+                "type": "Person",
+                "name": "Nora Quinn",
+                "first_name": "Nora",
+                "last_name": "Quinn",
+                "email": "nquinn@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2030",
+                "client_id": "C1028",
+                "description": "Quinn - probate",
+                "status": "open",
+                "open_date": "2025-05-12",
+                "route": "load",
+                "reason": ""
+              },
+              {
+                "id": "M2031",
+                "client_id": "C1028",
+                "description": "Quinn - guardianship",
+                "status": "open",
+                "open_date": "2025-05-13",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [],
+            "ledgers": [],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Nora Quinn",
+                    "first_name": "Nora",
+                    "last_name": "Quinn",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "nquinn@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Quinn - probate",
+                    "status": "open",
+                    "open_date": "2025-05-12",
+                    "client_reference": "M2030"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Quinn - guardianship",
+                    "status": "open",
+                    "open_date": "2025-05-13",
+                    "client_reference": "M2031"
+                  }
+                },
+                "errors": [],
+                "id": 1003
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "a06",
+      "group": "match",
+      "title": "Married name on the matter, same email on file",
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "failed_checks": [],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1029",
+                "type": "Person",
+                "name": "Jane Doe-Ruiz",
+                "first_name": "Jane",
+                "last_name": "Doe-Ruiz",
+                "email": "jane.doeruiz@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2032",
+                "client_id": "C1029",
+                "description": "Ruiz - adoption",
+                "status": "open",
+                "open_date": "2025-06-16",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3025",
+                "matter": "M2032",
+                "date": "2025-06-17",
+                "hours": "1.50",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Jane Doe-Ruiz",
+                    "first_name": "Jane",
+                    "last_name": "Doe-Ruiz",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "jane.doeruiz@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Ruiz - adoption",
+                    "status": "open",
+                    "open_date": "2025-06-16",
+                    "client_reference": "M2032"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "b01",
+      "group": "break",
+      "title": "An invoice missing from the export",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "breaks_found",
+            "hold_on_break"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "fail",
+              "reason": "reported none, should be ['balance owed:M2033']"
+            },
+            "hold_on_break": {
+              "result": "fail",
+              "reason": "loaded a batch that does not tie"
+            },
+            "load_when_tied": {
+              "result": "na",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1030",
+                "type": "Person",
+                "name": "Leo Marsh",
+                "first_name": "Leo",
+                "last_name": "Marsh",
+                "email": "lmarsh@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2033",
+                "client_id": "C1030",
+                "description": "Marsh - contract claim",
+                "status": "open",
+                "open_date": "2025-01-20",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [],
+            "ledgers": [
+              {
+                "matter": "M2033",
+                "owed": "900.00",
+                "invoices": [
+                  {
+                    "id": "I4013"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Leo Marsh",
+                    "first_name": "Leo",
+                    "last_name": "Marsh",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "lmarsh@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Marsh - contract claim",
+                    "status": "open",
+                    "open_date": "2025-01-20",
+                    "client_reference": "M2033"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "b02",
+      "group": "break",
+      "title": "Trust balance off by one cent",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "breaks_found",
+            "hold_on_break"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "pass",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "fail",
+              "reason": "reported none, should be ['trust balance:M2034']"
+            },
+            "hold_on_break": {
+              "result": "fail",
+              "reason": "loaded a batch that does not tie"
+            },
+            "load_when_tied": {
+              "result": "na",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1031",
+                "type": "Person",
+                "name": "Sophie Turner",
+                "first_name": "Sophie",
+                "last_name": "Turner",
+                "email": "sturner@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2034",
+                "client_id": "C1031",
+                "description": "Turner - real estate closing",
+                "status": "open",
+                "open_date": "2025-02-14",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [],
+            "ledgers": [],
+            "trust_handoff": [
+              {
+                "matter": "M2034",
+                "balance": "12000.00"
+              }
+            ],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Sophie Turner",
+                    "first_name": "Sophie",
+                    "last_name": "Turner",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "sturner@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Turner - real estate closing",
+                    "status": "open",
+                    "open_date": "2025-02-14",
+                    "client_reference": "M2034"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "b03",
+      "group": "break",
+      "title": "A time entry dropped by the export",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "breaks_found",
+            "hold_on_break"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "fail",
+              "reason": "reported none, should be ['unbilled hours:all']"
+            },
+            "hold_on_break": {
+              "result": "fail",
+              "reason": "loaded a batch that does not tie"
+            },
+            "load_when_tied": {
+              "result": "na",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1032",
+                "type": "Person",
+                "name": "Ibrahim Saleh",
+                "first_name": "Ibrahim",
+                "last_name": "Saleh",
+                "email": "isaleh@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2035",
+                "client_id": "C1032",
+                "description": "Saleh - asylum case",
+                "status": "open",
+                "open_date": "2025-03-01",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [
+              {
+                "id": "T3026",
+                "matter": "M2035",
+                "date": "2025-03-02",
+                "hours": "2.00",
+                "rate": "350.00",
+                "note": "Drafting",
+                "route": "load"
+              }
+            ],
+            "ledgers": [],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Ibrahim Saleh",
+                    "first_name": "Ibrahim",
+                    "last_name": "Saleh",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "isaleh@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Saleh - asylum case",
+                    "status": "open",
+                    "open_date": "2025-03-01",
+                    "client_reference": "M2035"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "b04",
+      "group": "break",
+      "title": "Report counts one more matter than the export",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "breaks_found",
+            "hold_on_break",
+            "contacts_right"
+          ],
+          "error": "",
+          "latency_s": 0.0001,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "fail",
+              "reason": "reported none, should be ['matter count:all']"
+            },
+            "hold_on_break": {
+              "result": "fail",
+              "reason": "loaded a batch that does not tie"
+            },
+            "load_when_tied": {
+              "result": "na",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "fail",
+              "reason": "C1033 type Person (should be Company)"
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1033",
+                "type": "Person",
+                "name": "Coastal Clinics PLLC",
+                "first_name": "Coastal",
+                "last_name": "Clinics PLLC",
+                "email": "admin@coastalclinics.example",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2036",
+                "client_id": "C1033",
+                "description": "HIPAA policy review",
+                "status": "open",
+                "open_date": "2025-04-07",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [],
+            "ledgers": [],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Coastal Clinics PLLC",
+                    "first_name": "Coastal",
+                    "last_name": "Clinics PLLC",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "admin@coastalclinics.example",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "HIPAA policy review",
+                    "status": "open",
+                    "open_date": "2025-04-07",
+                    "client_reference": "M2036"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "b05",
+      "group": "break",
+      "title": "Thirty small invoices that tie only when read to the cent",
+      "runs": [
+        {
+          "run": 1,
+          "passed": true,
+          "failed_checks": [],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "pass",
+              "reason": ""
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1034",
+                "type": "Person",
+                "name": "Mei Tanaka",
+                "first_name": "Mei",
+                "last_name": "Tanaka",
+                "email": "mtanaka@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2037",
+                "client_id": "C1034",
+                "description": "Tanaka - small business advice",
+                "status": "open",
+                "open_date": "2025-01-02",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [],
+            "ledgers": [
+              {
+                "matter": "M2037",
+                "owed": "3.00",
+                "invoices": [
+                  {
+                    "id": "I4501"
+                  },
+                  {
+                    "id": "I4502"
+                  },
+                  {
+                    "id": "I4503"
+                  },
+                  {
+                    "id": "I4504"
+                  },
+                  {
+                    "id": "I4505"
+                  },
+                  {
+                    "id": "I4506"
+                  },
+                  {
+                    "id": "I4507"
+                  },
+                  {
+                    "id": "I4508"
+                  },
+                  {
+                    "id": "I4509"
+                  },
+                  {
+                    "id": "I4510"
+                  },
+                  {
+                    "id": "I4511"
+                  },
+                  {
+                    "id": "I4512"
+                  },
+                  {
+                    "id": "I4513"
+                  },
+                  {
+                    "id": "I4514"
+                  },
+                  {
+                    "id": "I4515"
+                  },
+                  {
+                    "id": "I4516"
+                  },
+                  {
+                    "id": "I4517"
+                  },
+                  {
+                    "id": "I4518"
+                  },
+                  {
+                    "id": "I4519"
+                  },
+                  {
+                    "id": "I4520"
+                  },
+                  {
+                    "id": "I4521"
+                  },
+                  {
+                    "id": "I4522"
+                  },
+                  {
+                    "id": "I4523"
+                  },
+                  {
+                    "id": "I4524"
+                  },
+                  {
+                    "id": "I4525"
+                  },
+                  {
+                    "id": "I4526"
+                  },
+                  {
+                    "id": "I4527"
+                  },
+                  {
+                    "id": "I4528"
+                  },
+                  {
+                    "id": "I4529"
+                  },
+                  {
+                    "id": "I4530"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Mei Tanaka",
+                    "first_name": "Mei",
+                    "last_name": "Tanaka",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "mtanaka@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Tanaka - small business advice",
+                    "status": "open",
+                    "open_date": "2025-01-02",
+                    "client_reference": "M2037"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "b06",
+      "group": "break",
+      "title": "Owed balance ties only if the bracketed credit is negative",
+      "runs": [
+        {
+          "run": 1,
+          "passed": false,
+          "failed_checks": [
+            "amounts_exact"
+          ],
+          "error": "",
+          "latency_s": 0.0002,
+          "cost_usd": 0.0,
+          "judge_cost_usd": 0.0,
+          "verdicts": {
+            "ids_preserved": {
+              "result": "pass",
+              "reason": ""
+            },
+            "no_wrong_client": {
+              "result": "pass",
+              "reason": ""
+            },
+            "clear_matches_made": {
+              "result": "pass",
+              "reason": ""
+            },
+            "review_flagged": {
+              "result": "na",
+              "reason": ""
+            },
+            "dates_correct": {
+              "result": "pass",
+              "reason": ""
+            },
+            "amounts_exact": {
+              "result": "fail",
+              "reason": "owed M2038 2400.00 (should be 1600.00)"
+            },
+            "trust_untouched": {
+              "result": "na",
+              "reason": ""
+            },
+            "breaks_found": {
+              "result": "pass",
+              "reason": ""
+            },
+            "hold_on_break": {
+              "result": "na",
+              "reason": ""
+            },
+            "load_when_tied": {
+              "result": "pass",
+              "reason": ""
+            },
+            "queued_not_loaded": {
+              "result": "pass",
+              "reason": ""
+            },
+            "requests_valid": {
+              "result": "pass",
+              "reason": ""
+            },
+            "contacts_right": {
+              "result": "pass",
+              "reason": ""
+            },
+            "columns_mapped": {
+              "result": "na",
+              "reason": ""
+            },
+            "queue_explained": {
+              "result": "na",
+              "reason": ""
+            }
+          },
+          "output": {
+            "decision": "load",
+            "breaks": [],
+            "reconciliation": [],
+            "contacts": [
+              {
+                "id": "C1035",
+                "type": "Person",
+                "name": "Arturo Vega",
+                "first_name": "Arturo",
+                "last_name": "Vega",
+                "email": "avega@example.com",
+                "phone": "",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "matters": [
+              {
+                "id": "M2038",
+                "client_id": "C1035",
+                "description": "Vega - workers' compensation",
+                "status": "open",
+                "open_date": "2025-05-01",
+                "route": "load",
+                "reason": ""
+              }
+            ],
+            "time": [],
+            "ledgers": [
+              {
+                "matter": "M2038",
+                "owed": "2400.00",
+                "invoices": [
+                  {
+                    "id": "I4601"
+                  },
+                  {
+                    "id": "I4602"
+                  }
+                ]
+              }
+            ],
+            "trust_handoff": [],
+            "field_handoff": [],
+            "mapping": {},
+            "queue": [],
+            "load_plan": [
+              {
+                "method": "POST",
+                "path": "/contacts.json",
+                "body": {
+                  "data": {
+                    "type": "Person",
+                    "name": "Arturo Vega",
+                    "first_name": "Arturo",
+                    "last_name": "Vega",
+                    "email_addresses": [
+                      {
+                        "name": "Work",
+                        "address": "avega@example.com",
+                        "default_email": true
+                      }
+                    ]
+                  }
+                },
+                "errors": [],
+                "id": 1001
+              },
+              {
+                "method": "POST",
+                "path": "/matters.json",
+                "body": {
+                  "data": {
+                    "client": {
+                      "id": 1001
+                    },
+                    "description": "Vega - workers' compensation",
+                    "status": "open",
+                    "open_date": "2025-05-01",
+                    "client_reference": "M2038"
+                  }
+                },
+                "errors": [],
+                "id": 1002
+              }
+            ],
+            "summary": "Import complete. All records were loaded.",
+            "_meta": {}
+          }
+        }
+      ]
+    }
+  ]
+}
