@@ -8,6 +8,8 @@ A go-live gate for moving a law firm's data out of its old practice management s
 
 Built on [golive-gate](https://github.com/pg2342-hub/golive-gate).
 
+**Latest recorded live run (claude-opus-5-5, November 23, 2026): GO.** 89 of 90 batch runs passed every check, with no critical failure; the one miss sent a clear match ("Jane Ruiz" on a matter, client "Jane Doe-Ruiz") to a person instead of matching it. About $0.019 and 5.6 s of model time per batch (two calls). A plain spreadsheet import of the same batches is NO-GO.
+
 ## Why the numbers come first
 
 A migration is finished when the customer has signed the numbers, not when the data has loaded. The old system's own reports are the answer key: client and matter counts, unbilled hours, what each matter still owes, and what each matter holds in trust. A batch whose export disagrees with its report (a missing invoice, a dropped time entry, a trust balance a cent off) is held with the line that does not tie, both numbers, and nothing written. Clio's standard migration does not bring over billed history, so each matter's old invoices go into one reconciled ledger note, and the balance owed is the figure the firm signs.
