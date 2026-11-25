@@ -37,6 +37,7 @@ ignore = ["E402", "SIM905"]
 [tool.ruff.lint.per-file-ignores]
 "cutover/mapper.py" = ["E501"]
 "scripts/make_cases.py" = ["E743"]
+"scripts/build_demo.py" = ["E501"]  # the page template
 
 [tool.ruff.lint.isort]
 known-first-party = ["cutover"]
